@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comic Generator</title>
+    <style>
+        body {
+            background-color: #333447; /* Set your desired background color */
+            text-align: center; /* Center-align text in the body */
+            font-family: Arial, sans-serif; /* Optional: Choose a suitable font */
+            padding-left: 50px; 
+            padding-right: 50px; 
+        }
+
+        h1 {
+            background-color: #2c747d; /* Set your desired background color for the title */
+            color: white; /* Set text color for the title */
+            padding: 20px; /* Add padding to the title for better visibility */
+        }
+
+        form {
+            display: inline-block; /* Make the form inline-block to center it */
+            text-align: left; /* Align form elements to the left within the block */
+            padding: 20px; /* Add padding to the form for better spacing */
+            background-color: #fff; /* Set your desired background color for the form */
+            border-radius: 10px; /* Optional: Add border-radius for a rounded look */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+        }
+
+        label, input {
+            display: inline-block;
+        }
+        label {
+            width: 80px; /* Adjust the width of the label as needed */
+        }
+        input {
+            width: calc(100% - 90px);/* Make the input fields take the full width of the container */
+            padding: 8px; /* Add padding for better input field appearance */
+            margin-bottom: 15px; /* Add margin between input fields */
+            box-sizing: border-box; /* Include padding and border in the width calculation */
+        }
+        div{
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #147ef7; /* Set your desired background color for the button */
+            color: white; /* Set text color for the button */
+            padding: 10px 15px; /* Add padding to the button for better appearance */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Optional: Add border-radius for a rounded look */
+            cursor: pointer; /* Change cursor to pointer on hover */
+        }
+    </style>
+    <script>
+        function checkForm() {
+            // Check if all input fields are filled
+            var allFilled = true;
+            var inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(function (input) {
+                if (input.value.trim() === '') {
+                    allFilled = false;
+                }
+            });
+
+            // Toggle button visibility based on the form completion status
+            var submitButton = document.getElementById('submitButton');
+            submitButton.style.display = allFilled ? 'block' : 'none';
+        }
+        function generateComic() {
+            // Display the message
+            document.getElementById('message').innerHTML = 'Generating Comic...';
+            document.getElementById('message').style.display = 'block';
+
+            // Submit the form after a delay (you can adjust the delay as needed)
+            setTimeout(function() {
+                document.getElementById('comicForm').submit();
+            }, 2000); // 2000 milliseconds (2 seconds) delay in this example
+        }
+    </script>
+</head>
+<body>
+    <h1>Comic Generator</h1>
+    <div id="message" style="display: none;"></div> <!--this will appear once we click on submit-->
+    <form action="/generate_comic" method="post" oninput="checkForm()">
+        {% for i in range(1, 11) %}
+            <label for="text_{{ i }}">Panel {{ i }}:</label>
+            <input type="text" id="text_{{ i }}" name="text_{{ i }}" value="" required>
+        {% endfor %}
+        <!--button will appear after all the inputs in the form all filled-->>
+        <button id="submitButton" type="submit" style="display: none;" onclick="generateComic()">Generate Comic</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comic Strip</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: #333447;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            background-color: #2c747d;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            
+        }
+
+        .comic-panel {
+            margin: 10px;
+            border: 2px solid #ddd; /* Add a border around each comic panel */
+            border-radius: 10px; /* Add border radius for rounded corners */
+            overflow: hidden; /* Ensure overflow doesn't affect the layout */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+            background-color: #fff; /* Set background color for the comic panel */
+            height: auto;
+            justify-content: bottom;
+            align-items: bottom;
+        }
+
+        img {
+            max-width: 90%; /* Make sure images don't overflow their container */
+            max-height: 90%; /* Maintain aspect ratio */
+            display: block; /* Remove default image spacing */
+            margin: auto; /* Center-align the image within its container */
+        }
+
+        .link_to_home{
+            background-color: #b6ad5a;
+            color: white;
+            padding: 10px;
+        }
+        
+    </style>
+    
+</head>
+<body>
+    <section>
+    <h1>Comic Strip</h1>
+        <!--link to navigate to Generate Comic-->
+        <div class="link_to_home"  ><a  id="gc" href="/">Generate Comic</a> </div>
+    </section>
+    
+    <div class="comic-panel">
+        <img id="picture" src="data:image/png;base64,{{ img_data }}"> 
+    </div>
+
+</body>
+</html>
+
