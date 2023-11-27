@@ -18,12 +18,9 @@
         }
 
         h1 {
-            background-color: #2c747d;
-            color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            
+            background-color: #2c747d; /* Set your desired background color for the title */
+            color: white; /* Set text color for the title */
+            padding: 20px; /* Add padding to the title for better visibility */
         }
 
         .comic-panel {
@@ -34,37 +31,105 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
             background-color: #fff; /* Set background color for the comic panel */
             height: auto;
-            justify-content: bottom;
-            align-items: bottom;
+            width: auto;
+
         }
 
         img {
-            max-width: 90%; /* Make sure images don't overflow their container */
+            width: 90%; /* Make sure images don't overflow their container */
             max-height: 90%; /* Maintain aspect ratio */
             display: block; /* Remove default image spacing */
             margin: auto; /* Center-align the image within its container */
         }
 
-        .link_to_home{
-            background-color: #b6ad5a;
+        .button-container {
+            display: flex;
+            justify-content:space-evenly;
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #147ef7;
             color: white;
-            padding: 10px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         
     </style>
     
 </head>
 <body>
-    <section>
+    <section style="width: 100%;">
     <h1>Comic Strip</h1>
-        <!--link to navigate to Generate Comic-->
-        <div class="link_to_home"  ><a  id="gc" href="/">Generate Comic</a> </div>
+        
+
+        <!-- Button container for Download and Share buttons -->
+        <div class="button-container">
+            <!--link to navigate to Generate Comic-->
+            <a  class="button"  id="gc" href="/">Generate new comic</a>
+            <button class="button" onclick="downloadImage()">Download comic</button>
+            <button class="button" onclick="shareComic()">Share comic via Email</button>
+        </div>
     </section>
     
     <div class="comic-panel">
         <img id="picture" src="data:image/png;base64,{{ img_data }}"> 
     </div>
+    <!-- JavaScript to handle button actions -->
+    <script>
+        function downloadImage() {
+            const imgData = document.getElementById('picture').src;
+        
+            // Create a link element
+            const downloadLink = document.createElement('a');
+            downloadLink.href = imgData;
+            downloadLink.download = 'comic_strip.png';
 
+            // Trigger a click event on the link
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+
+            // Remove the link from the DOM
+            document.body.removeChild(downloadLink);
+
+        }
+
+        function shareComic() {
+            const imgData = document.getElementById('picture').src;
+
+            // Prompt the user for their email address
+            const userEmail = prompt('Enter your email address:');
+            
+            if (userEmail) {
+                // Use the fetch API to send the email data to the server
+                fetch('/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: userEmail,
+                        image: imgData,
+                    }),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Email sent successfully!');
+                    } else {
+                        console.error('Error sending email:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending email:', error.message);
+                });
+            } else {
+                console.log('Email sharing cancelled.');
+            }
+        }
+
+    </script>
 </body>
 </html>
 

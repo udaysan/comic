@@ -1,4 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 import requests
 import io
 from PIL import Image, ImageOps
@@ -24,6 +28,42 @@ def query(payload):
 def index():
     return render_template('index.html')
 
+@app.route('/send-email', methods=['POST'])
+def send_email():
+    try:
+        data = request.get_json()
+
+        # Replace the placeholders with your email server details
+        smtp_server = 'smtp.gmail.com'
+        smtp_port = 465 
+        smtp_username = 'xyz.bank.35@gmail.com' #change email address
+        smtp_password = ''#update deive specific password for your email address
+
+        from_address = smtp_username
+        to_address = data['email']
+
+        subject = 'Comic Strip'
+        body = 'Check out this awesome comic!'
+
+        # Create the MIME object
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        # Attach the image
+        image_data = data['image'].split(',')[1]  # Remove the data:image/png;base64, prefix
+        image_attachment = MIMEImage(base64.b64decode(image_data), name='comic.png')
+        msg.attach(image_attachment)
+
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(smtp_username, smtp_password)
+            server.sendmail(from_address, to_address, msg.as_string())
+
+        return jsonify({'message': 'Email sent successfully!'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/generate_comic', methods=['POST'])
 def generate_comic():
@@ -36,7 +76,7 @@ def generate_comic():
         for i, text_input in enumerate(text_inputs):
             image_bytes = query({"inputs": text_input})
             image = Image.open(io.BytesIO(image_bytes))
-            image = ImageOps.expand(image, border=(4, 4), fill='white')#adding border to the image
+            image = ImageOps.expand(image, border=(4, 4), fill='black')#adding border to the image
             images.append(image)
 
 
